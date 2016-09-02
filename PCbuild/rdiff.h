@@ -5,9 +5,9 @@
 #ifdef BUILDDLL
 #define DLLEXPORT __declspec(dllexport)
 
-DLLEXPORT rs_result rdiff_sig(const char *baseFile, const char *sigFile);
-DLLEXPORT rs_result rdiff_delta(const char *sigFile, const char *newFile, const char *deltaFile);
-DLLEXPORT rs_result rdiff_patch(const char *baseFile, const char *deltaFile, const char *newFile);
+DLLEXPORT rs_result rdiff_sig(const wchar_t *baseFile, const wchar_t *sigFile);
+DLLEXPORT rs_result rdiff_delta(const wchar_t *sigFile, const wchar_t *newFile, const wchar_t *deltaFile);
+DLLEXPORT rs_result rdiff_patch(const wchar_t *baseFile, const wchar_t *deltaFile, const wchar_t *newFile);
 
 #endif
 

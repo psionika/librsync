@@ -19,9 +19,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-                              /*
-                               | Pick a window, Jimmy, you're leaving.
-                               */
+							  /*
+							   | Pick a window, Jimmy, you're leaving.
+							   */
 
 
 /*
@@ -64,29 +64,29 @@ int rs_inbuflen = 16000, rs_outbuflen = 16000;
 
 
 struct rs_filebuf {
-        FILE *f;
-        char            *buf;
-        size_t          buf_len;
+		FILE *f;
+		char            *buf;
+		size_t          buf_len;
 };
 
 
 rs_filebuf_t *rs_filebuf_new(FILE *f, size_t buf_len) 
 {
-    rs_filebuf_t *pf = rs_alloc_struct(rs_filebuf_t);
+	rs_filebuf_t *pf = rs_alloc_struct(rs_filebuf_t);
 
-    pf->buf = rs_alloc(buf_len, "file buffer");
-    pf->buf_len = buf_len;
-    pf->f = f;
+	pf->buf = rs_alloc(buf_len, "file buffer");
+	pf->buf_len = buf_len;
+	pf->f = f;
 
-    return pf;
+	return pf;
 }
 
 
 void rs_filebuf_free(rs_filebuf_t *fb) 
 {
 	free(fb->buf);
-        rs_bzero(fb, sizeof *fb);
-        free(fb);
+		rs_bzero(fb, sizeof *fb);
+		free(fb);
 }
 
 
@@ -96,56 +96,56 @@ void rs_filebuf_free(rs_filebuf_t *fb)
  * the end of file has passed into the stream.
  */
 rs_result rs_infilebuf_fill(rs_job_t *job, rs_buffers_t *buf,
-                            void *opaque)
+							void *opaque)
 {
-    int                     len;
-    rs_filebuf_t            *fb = (rs_filebuf_t *) opaque;
-    FILE                    *f = fb->f;
-        
-    /* This is only allowed if either the buf has no input buffer
-     * yet, or that buffer could possibly be BUF. */
-    if (buf->next_in != NULL) {
-        assert(buf->avail_in <= fb->buf_len);
-        assert(buf->next_in >= fb->buf);
-        assert(buf->next_in <= fb->buf + fb->buf_len);
-    } else {
-        assert(buf->avail_in == 0);
-    }
+	int                     len;
+	rs_filebuf_t            *fb = (rs_filebuf_t *) opaque;
+	FILE                    *f = fb->f;
 
-    if (buf->eof_in || (buf->eof_in = feof(f))) {
-        rs_trace("seen end of file on input");
-        buf->eof_in = 1;
-        return RS_DONE;
-    }
+	/* This is only allowed if either the buf has no input buffer
+	 * yet, or that buffer could possibly be BUF. */
+	if (buf->next_in != NULL) {
+		assert(buf->avail_in <= fb->buf_len);
+		assert(buf->next_in >= fb->buf);
+		assert(buf->next_in <= fb->buf + fb->buf_len);
+	} else {
+		assert(buf->avail_in == 0);
+	}
 
-    if (buf->avail_in)
-        /* Still some data remaining.  Perhaps we should read
-           anyhow? */
-        return RS_DONE;
-        
-    len = fread(fb->buf, 1, fb->buf_len, f);
-    if (len <= 0) {
-        /* This will happen if file size is a multiple of input block len
-         */
-        if (feof(f)) {
-            rs_trace("seen end of file on input");
-            buf->eof_in = 1;
-            return RS_DONE;
-        }
-        if (ferror(f)) {
-            rs_error("error filling buf from file: %s",
-                     strerror(errno));
-            return RS_IO_ERROR;
-        } else {
-            rs_error("no error bit, but got %d return when trying to read",
-                     len);
-            return RS_IO_ERROR;
-        }
-    }
-    buf->avail_in = len;
-    buf->next_in = fb->buf;
+	if (buf->eof_in || (buf->eof_in = feof(f))) {
+		rs_trace("seen end of file on input");
+		buf->eof_in = 1;
+		return RS_DONE;
+	}
 
-    return RS_DONE;
+	if (buf->avail_in)
+		/* Still some data remaining.  Perhaps we should read
+		   anyhow? */
+		return RS_DONE;
+
+	len = fread(fb->buf, 1, fb->buf_len, f);
+	if (len <= 0) {
+		/* This will happen if file size is a multiple of input block len
+		 */
+		if (feof(f)) {
+			rs_trace("seen end of file on input");
+			buf->eof_in = 1;
+			return RS_DONE;
+		}
+		if (ferror(f)) {
+			rs_error("error filling buf from file: %s",
+					 strerror(errno));
+			return RS_IO_ERROR;
+		} else {
+			rs_error("no error bit, but got %d return when trying to read",
+					 len);
+			return RS_IO_ERROR;
+		}
+	}
+	buf->avail_in = len;
+	buf->next_in = fb->buf;
+
+	return RS_DONE;
 }
 
 
@@ -156,43 +156,43 @@ rs_result rs_infilebuf_fill(rs_job_t *job, rs_buffers_t *buf,
  */
 rs_result rs_outfilebuf_drain(rs_job_t *job, rs_buffers_t *buf, void *opaque)
 {
-    int present;
-    rs_filebuf_t *fb = (rs_filebuf_t *) opaque;
-    FILE *f = fb->f;
+	int present;
+	rs_filebuf_t *fb = (rs_filebuf_t *) opaque;
+	FILE *f = fb->f;
 
-    /* This is only allowed if either the buf has no output buffer
-     * yet, or that buffer could possibly be BUF. */
-    if (buf->next_out == NULL) {
-        assert(buf->avail_out == 0);
-                
-        buf->next_out = fb->buf;
-        buf->avail_out = fb->buf_len;
-                
-        return RS_DONE;
-    }
-        
-    assert(buf->avail_out <= fb->buf_len);
-    assert(buf->next_out >= fb->buf);
-    assert(buf->next_out <= fb->buf + fb->buf_len);
+	/* This is only allowed if either the buf has no output buffer
+	 * yet, or that buffer could possibly be BUF. */
+	if (buf->next_out == NULL) {
+		assert(buf->avail_out == 0);
+				
+		buf->next_out = fb->buf;
+		buf->avail_out = fb->buf_len;
+				
+		return RS_DONE;
+	}
+		
+	assert(buf->avail_out <= fb->buf_len);
+	assert(buf->next_out >= fb->buf);
+	assert(buf->next_out <= fb->buf + fb->buf_len);
 
-    present = buf->next_out - fb->buf;
-    if (present > 0) {
-        int result;
-                
-        assert(present > 0);
+	present = buf->next_out - fb->buf;
+	if (present > 0) {
+		int result;
+				
+		assert(present > 0);
 
-        result = fwrite(fb->buf, 1, present, f);
-        if (present != result) {
-            rs_error("error draining buf to file: %s",
-                     strerror(errno));
-            return RS_IO_ERROR;
-        }
+		result = fwrite(fb->buf, 1, present, f);
+		if (present != result) {
+			rs_error("error draining buf to file: %s",
+					 strerror(errno));
+			return RS_IO_ERROR;
+		}
 
-        buf->next_out = fb->buf;
-        buf->avail_out = fb->buf_len;
-    }
-        
-    return RS_DONE;
+		buf->next_out = fb->buf;
+		buf->avail_out = fb->buf_len;
+	}
+		
+	return RS_DONE;
 }
 
 
@@ -201,23 +201,23 @@ rs_result rs_outfilebuf_drain(rs_job_t *job, rs_buffers_t *buf, void *opaque)
  */
 rs_result rs_file_copy_cb(void *arg, rs_long_t pos, size_t *len, void **buf)
 {
-    int        got;
-    FILE       *f = (FILE *) arg;
+	int        got;
+	FILE       *f = (FILE *) arg;
 
-    if (fseek(f, pos, SEEK_SET)) {
-        rs_log(RS_LOG_ERR, "seek failed: %s", strerror(errno));
-        return RS_IO_ERROR;
-    }
+	if (fseek(f, pos, SEEK_SET)) {
+		rs_log(RS_LOG_ERR, "seek failed: %s", strerror(errno));
+		return RS_IO_ERROR;
+	}
 
-    got = fread(*buf, 1, *len, f);
-    if (got == -1) {
-        rs_error("read error: %s", strerror(errno));
-        return RS_IO_ERROR;
-    } else if (got == 0) {
-        rs_error("unexpected eof on fd%d", fileno(f));
-        return RS_INPUT_ENDED;
-    } else {
-        *len = got;
-        return RS_DONE;
-    }
+	got = fread(*buf, 1, *len, f);
+	if (got == -1) {
+		rs_error("read error: %s", strerror(errno));
+		return RS_IO_ERROR;
+	} else if (got == 0) {
+		rs_error("unexpected eof on fd%d", fileno(f));
+		return RS_INPUT_ENDED;
+	} else {
+		*len = got;
+		return RS_DONE;
+	}
 }

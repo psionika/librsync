@@ -23,42 +23,42 @@ typedef struct {
 
 struct optionStackEntry {
     int argc;
-    /*@only@*/ const char ** argv;
+    /*@only@*/ const wchar_t ** argv;
     /*@only@*/ pbm_set * argb;
     int next;
-    /*@only@*/ const char * nextArg;
-    /*@keep@*/ const char * nextCharArg;
+    /*@only@*/ const wchar_t * nextArg;
+    /*@keep@*/ const wchar_t * nextCharArg;
     /*@dependent@*/ struct poptAlias * currAlias;
     int stuffed;
 };
 
 struct execEntry {
-    const char * longName;
-    char shortName;
-    const char * script;
+    const wchar_t * longName;
+    wchar_t shortName;
+    const wchar_t * script;
 };
 
 struct poptContext_s {
     struct optionStackEntry optionStack[POPT_OPTION_DEPTH];
     /*@dependent@*/ struct optionStackEntry * os;
-    /*@owned@*/ const char ** leftovers;
+    /*@owned@*/ const wchar_t ** leftovers;
     int numLeftovers;
     int nextLeftover;
     /*@keep@*/ const struct poptOption * options;
     int restLeftover;
-    /*@only@*/ const char * appName;
+    /*@only@*/ const wchar_t * appName;
     /*@only@*/ struct poptAlias * aliases;
     int numAliases;
     int flags;
     struct execEntry * execs;
     int numExecs;
-    /*@only@*/ const char ** finalArgv;
+    /*@only@*/ const wchar_t ** finalArgv;
     int finalArgvCount;
     int finalArgvAlloced;
     /*@dependent@*/ struct execEntry * doExec;
-    /*@only@*/ const char * execPath;
+    /*@only@*/ const wchar_t * execPath;
     int execAbsolute;
-    /*@only@*/ const char * otherHelp;
+    /*@only@*/ const wchar_t * otherHelp;
     pbm_set * arg_strip;
 };
 

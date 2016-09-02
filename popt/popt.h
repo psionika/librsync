@@ -34,7 +34,7 @@ extern "C" {
 #define POPT_CBFLAG_PRE		0x80000000  /* call the callback before parse */
 #define POPT_CBFLAG_POST	0x40000000  /* call the callback after parse */
 #define POPT_CBFLAG_INC_DATA	0x20000000  /* use data from the include line,
-					       not the subtable */
+						   not the subtable */
 
 #define POPT_ERROR_NOARG	-10
 #define POPT_ERROR_BADOPT	-11
@@ -53,20 +53,20 @@ extern "C" {
 #define POPT_CONTEXT_POSIXMEHARDER (1 << 2) /* options can't follow args */
 
 struct poptOption {
-    /*@observer@*/ /*@null@*/ const char * longName;	/* may be NULL */
-    char shortName;		/* may be '\0' */
-    int argInfo;
-    /*@shared@*/ /*@null@*/ void * arg;		/* depends on argInfo */
-    int val;			/* 0 means don't return, just update flag */
-    /*@shared@*/ /*@null@*/ const char * descrip;	/* description for autohelp -- may be NULL */
-    /*@shared@*/ /*@null@*/ const char * argDescrip;	/* argument description for autohelp */
+	/*@observer@*/ /*@null@*/ const wchar_t * longName;	/* may be NULL */
+	wchar_t shortName;		/* may be '\0' */
+	int argInfo;
+	/*@shared@*/ /*@null@*/ void * arg;		/* depends on argInfo */
+	int val;			/* 0 means don't return, just update flag */
+	/*@shared@*/ /*@null@*/ const wchar_t * descrip;	/* description for autohelp -- may be NULL */
+	/*@shared@*/ /*@null@*/ const wchar_t * argDescrip;	/* argument description for autohelp */
 };
 
 struct poptAlias {
-    /*@owned@*/ /*@null@*/ const char * longName;	/* may be NULL */
-    char shortName;		/* may be '\0' */
-    int argc;
-    /*@owned@*/ const char ** argv;		/* must be free()able */
+	/*@owned@*/ /*@null@*/ const wchar_t * longName;	/* may be NULL */
+	wchar_t shortName;		/* may be '\0' */
+	int argc;
+	/*@owned@*/ const char ** argv;		/* must be free()able */
 };
 
 extern struct poptOption poptHelpOptions[];
@@ -83,45 +83,45 @@ enum poptCallbackReason { POPT_CALLBACK_REASON_PRE,
 			  POPT_CALLBACK_REASON_OPTION };
 typedef void (*poptCallbackType)(poptContext con, 
 				 enum poptCallbackReason reason,
-			         const struct poptOption * opt,
-				 const char * arg, const void * data);
+					 const struct poptOption * opt,
+				 const wchar_t * arg, const void * data);
 
-/*@only@*/ poptContext poptGetContext(/*@keep@*/ const char * name,
-		int argc, /*@keep@*/ const char ** argv,
+/*@only@*/ poptContext poptGetContext(/*@keep@*/ const wchar_t * name,
+		int argc, /*@keep@*/ const wchar_t ** argv,
 		/*@keep@*/ const struct poptOption * options, int flags);
 void poptResetContext(poptContext con);
 
 /* returns 'val' element, -1 on last item, POPT_ERROR_* on error */
 int poptGetNextOpt(poptContext con);
 /* returns NULL if no argument is available */
-/*@observer@*/ /*@null@*/ const char * poptGetOptArg(poptContext con);
+/*@observer@*/ /*@null@*/ const wchar_t * poptGetOptArg(poptContext con);
 /* returns NULL if no more options are available */
-/*@observer@*/ /*@null@*/ const char * poptGetArg(poptContext con);
-/*@observer@*/ /*@null@*/ const char * poptPeekArg(poptContext con);
-/*@observer@*/ /*@null@*/ const char ** poptGetArgs(poptContext con);
+/*@observer@*/ /*@null@*/ const wchar_t * poptGetArg(poptContext con);
+/*@observer@*/ /*@null@*/ const wchar_t * poptPeekArg(poptContext con);
+/*@observer@*/ /*@null@*/ const wchar_t ** poptGetArgs(poptContext con);
 /* returns the option which caused the most recent error */
-/*@observer@*/ const char * poptBadOption(poptContext con, int flags);
+/*@observer@*/ const wchar_t * poptBadOption(poptContext con, int flags);
 void poptFreeContext( /*@only@*/ poptContext con);
-int poptStuffArgs(poptContext con, /*@keep@*/ const char ** argv);
+int poptStuffArgs(poptContext con, /*@keep@*/ const wchar_t ** argv);
 int poptAddAlias(poptContext con, struct poptAlias alias, int flags);
-int poptReadConfigFile(poptContext con, const char * fn);
+int poptReadConfigFile(poptContext con, const wchar_t * fn);
 /* like above, but reads /etc/popt and $HOME/.popt along with environment 
    vars */
 int poptReadDefaultConfig(poptContext con, int useEnv);
 /* argv should be freed -- this allows ', ", and \ quoting, but ' is treated
    the same as " and both may include \ quotes */
-int poptDupArgv(int argc, const char **argv,
-		/*@out@*/ int * argcPtr, /*@out@*/ const char *** argvPtr);
-int poptParseArgvString(const char * s,
-		/*@out@*/ int * argcPtr, /*@out@*/ const char *** argvPtr);
-/*@observer@*/ const char *const poptStrerror(const int error);
-void poptSetExecPath(poptContext con, const char * path, int allowAbsolute);
+int poptDupArgv(int argc, const wchar_t **argv,
+		/*@out@*/ int * argcPtr, /*@out@*/ const wchar_t *** argvPtr);
+int poptParseArgvString(const wchar_t * s,
+		/*@out@*/ int * argcPtr, /*@out@*/ const wchar_t *** argvPtr);
+/*@observer@*/ const wchar_t *const poptStrerror(const int error);
+void poptSetExecPath(poptContext con, const wchar_t * path, int allowAbsolute);
 void poptPrintHelp(poptContext con, FILE * f, int flags);
 void poptPrintUsage(poptContext con, FILE * f, int flags);
-void poptSetOtherOptionHelp(poptContext con, const char * text);
-/*@observer@*/ const char * poptGetInvocationName(poptContext con);
+void poptSetOtherOptionHelp(poptContext con, const wchar_t * text);
+/*@observer@*/ const wchar_t * poptGetInvocationName(poptContext con);
 /* shuffles argv pointers to remove stripped args, returns new argc */
-int poptStrippedArgv(poptContext con, int argc, char **argv);
+int poptStrippedArgv(poptContext con, int argc, wchar_t **argv);
 
 #ifdef  __cplusplus
 }

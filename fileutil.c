@@ -2,20 +2,20 @@
  *
  * librsync -- library for network deltas
  * $Id$
- * 
+ *
  * Copyright (C) 1999, 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
  * Copyright (C) 1999 by Andrew Tridgell <tridge@samba.org>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -51,7 +51,7 @@
  * \param fopen-style mode string.
  */
 FILE *
-rs_file_open(char const *filename, char const *mode)
+rs_file_open(wchar_t const *filename, wchar_t const *mode)
 {
     FILE           *f;
     int		    is_write;
@@ -65,13 +65,13 @@ rs_file_open(char const *filename, char const *mode)
 	    return stdin;
     }
 
-    if (!(f = fopen(filename, mode))) {
+    if (!(f = _wfopen(filename, mode))) {
 	rs_error("Error opening \"%s\" for %s: %s", filename,
 		  is_write ? "write" : "read",
 		  strerror(errno));
 	exit(RS_IO_ERROR);
     }
-    
+
     return f;
 }
 

@@ -617,23 +617,23 @@ int poptGetNextOpt(poptContext con)
     return opt->val;
 }
 
-const char * poptGetOptArg(poptContext con) {
-    const char * ret = con->os->nextArg;
+const wchar_t * poptGetOptArg(poptContext con) {
+    const wchar_t * ret = con->os->nextArg;
     con->os->nextArg = NULL;
     return ret;
 }
 
-const char * poptGetArg(poptContext con) {
+const wchar_t * poptGetArg(poptContext con) {
     if (con->numLeftovers == con->nextLeftover) return NULL;
     return con->leftovers[con->nextLeftover++];
 }
 
-const char * poptPeekArg(poptContext con) {
+const wchar_t * poptPeekArg(poptContext con) {
     if (con->numLeftovers == con->nextLeftover) return NULL;
     return con->leftovers[con->nextLeftover];
 }
 
-const char ** poptGetArgs(poptContext con) {
+const wchar_t ** poptGetArgs(poptContext con) {
     if (con->numLeftovers == con->nextLeftover) return NULL;
 
     /* some apps like [like RPM ;-) ] need this NULL terminated */
@@ -694,7 +694,7 @@ int poptAddAlias(poptContext con, struct poptAlias newAlias,
     return 0;
 }
 
-const char * poptBadOption(poptContext con, int flags) {
+const wchar_t * poptBadOption(poptContext con, int flags) {
     struct optionStackEntry * os;
 
     if (flags & POPT_BADOPTION_NOALIAS)
@@ -711,7 +711,7 @@ const char * poptBadOption(poptContext con, int flags) {
 #define POPT_ERROR_BADQUOTE	-15	/* only from poptParseArgString() */
 #define POPT_ERROR_ERRNO	-16	/* only from poptParseArgString() */
 
-const char *const poptStrerror(const int error) {
+const wchar_t *const poptStrerror(const int error) {
     switch (error) {
       case POPT_ERROR_NOARG:
 	return POPT_("missing argument");
@@ -753,11 +753,11 @@ int poptStuffArgs(poptContext con, const char ** argv) {
     return 0;
 }
 
-const char * poptGetInvocationName(poptContext con) {
+const wchar_t * poptGetInvocationName(poptContext con) {
     return con->os->argv[0];
 }
 
-int poptStrippedArgv(poptContext con, int argc, char **argv)
+int poptStrippedArgv(poptContext con, int argc, wchar_t **argv)
 {
     int i,j=1, numargs=argc;
     

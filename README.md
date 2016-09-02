@@ -1,3 +1,6 @@
+Unicode version librsync. For ONLY WINDOWS!!!
+
+
 # librsync
 
 librsync implements the rolling-checksum algorithm of remote file
